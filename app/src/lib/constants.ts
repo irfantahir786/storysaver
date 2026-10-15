@@ -1,0 +1,1 @@
+export const API_TIME = process.env.API_TIME ? parseInt(process.env.API_TIME) : 5000;
