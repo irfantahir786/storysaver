@@ -1,6 +1,16 @@
 "use server";
 
 import type { ContentItem } from '@/lib/types';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const API_BASE_URL = (
+  process.env.API_BASE_URL ||
+  (process.env.NODE_ENV === 'production'
+    ? 'https://api.storysaver.in'
+    : 'http://localhost:3005')
+).replace(/\/$/, '');
 
 /**
  * @fileOverview Server Actions for interacting with the StorySaver API.
@@ -12,7 +22,7 @@ import type { ContentItem } from '@/lib/types';
  */
 export async function fetchSettings() {
   try {
-    const response = await fetch('https://api.storysaver.in/settings', {
+    const response = await fetch(`${API_BASE_URL}/settings`, {
       cache: 'no-store'
     });
     if (!response.ok) {
@@ -30,7 +40,7 @@ export async function fetchSettings() {
  */
 export async function fetchAds() {
   try {
-    const response = await fetch('https://api.storysaver.in/ads/', {
+    const response = await fetch(`${API_BASE_URL}/ads/`, {
       cache: 'no-store'
     });
     if (!response.ok) {
@@ -48,7 +58,7 @@ export async function fetchAds() {
  */
 export async function fetchAdById(id: string) {
   try {
-    const response = await fetch(`https://api.storysaver.in/ads/${id}`, {
+    const response = await fetch(`${API_BASE_URL}/ads/${id}`, {
       cache: 'no-store'
     });
     if (!response.ok) {
@@ -68,7 +78,7 @@ export async function fetchAdById(id: string) {
  */
 export async function updateAd(id: string | number, payload: any) {
   try {
-    const response = await fetch(`https://api.storysaver.in/ads/${id}`, {
+    const response = await fetch(`${API_BASE_URL}/ads/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -93,7 +103,7 @@ export async function updateAd(id: string | number, payload: any) {
  */
 export async function createSetting(payload: { key: string; value: string; notes: string; app: number }) {
   try {
-    const response = await fetch('https://api.storysaver.in/settings', {
+    const response = await fetch(`${API_BASE_URL}/settings`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -118,7 +128,7 @@ export async function createSetting(payload: { key: string; value: string; notes
  */
 export async function updateSetting(key: string, payload: { value: string; notes: string; app: number }) {
   try {
-    const response = await fetch(`https://api.storysaver.in/settings/${key}`, {
+    const response = await fetch(`${API_BASE_URL}/settings/${key}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -143,7 +153,7 @@ export async function updateSetting(key: string, payload: { value: string; notes
  */
 export async function deleteSetting(key: string) {
   try {
-    const response = await fetch(`https://api.storysaver.in/settings/${key}`, {
+    const response = await fetch(`${API_BASE_URL}/settings/${key}`, {
       method: 'DELETE',
     });
 
@@ -164,7 +174,7 @@ export async function deleteSetting(key: string) {
  */
 export async function searchInstagramUser(username: string) {
   try {
-    const response = await fetch(`https://api.storysaver.in/ig/searchUser/${username}`);
+    const response = await fetch(`${API_BASE_URL}/ig/searchUser/${username}`);
     if (!response.ok) {
       throw new Error(`Search failed with status: ${response.status}`);
     }
@@ -181,7 +191,7 @@ export async function searchInstagramUser(username: string) {
  */
 export async function fetchUserStories(userId: string) {
   try {
-    const response = await fetch(`https://api.storysaver.in/ig/stories/${userId}`, {
+    const response = await fetch(`${API_BASE_URL}/ig/stories/${userId}`, {
       cache: 'no-store'
     });
     
@@ -213,7 +223,7 @@ export async function fetchUserStories(userId: string) {
  */
 export async function fetchStoryByMediaId(mediaId: string) {
   try {
-    const response = await fetch(`https://api.storysaver.in/ig/media/${mediaId}`);
+    const response = await fetch(`${API_BASE_URL}/ig/media/${mediaId}`);
     if (!response.ok) {
       throw new Error(`Media fetch failed with status: ${response.status}`);
     }
@@ -243,7 +253,7 @@ export async function fetchStoryByMediaId(mediaId: string) {
  */
 export async function fetchHighlightMedia(highlightId: string) {
   try {
-    const response = await fetch(`https://api.storysaver.in/ig/highlight/${highlightId}`);
+    const response = await fetch(`${API_BASE_URL}/ig/highlight/${highlightId}`);
     if (!response.ok) {
       throw new Error(`Highlight fetch failed with status: ${response.status}`);
     }
@@ -271,7 +281,7 @@ export async function fetchHighlightMedia(highlightId: string) {
  */
 export async function fetchBaseDP(username: string) {
   try {
-    const response = await fetch(`https://api.storysaver.in/ig/baseDP/${username}`);
+    const response = await fetch(`${API_BASE_URL}/ig/baseDP/${username}`);
     if (!response.ok) {
       throw new Error(`DP fetch failed with status: ${response.status}`);
     }
@@ -301,7 +311,7 @@ export async function fetchBaseDP(username: string) {
  */
 export async function fetchSessions() {
   try {
-    const response = await fetch('https://api.storysaver.in/ig/sessions', { cache: 'no-store' });
+    const response = await fetch(`${API_BASE_URL}/ig/sessions`, { cache: 'no-store' });
     if (!response.ok) throw new Error('Failed to fetch sessions');
     return await response.json();
   } catch (error) {
@@ -315,7 +325,7 @@ export async function fetchSessions() {
  */
 export async function updateSessionStatus(id: number | string, sessionid: string) {
   try {
-    const response = await fetch('https://api.storysaver.in/ig/sessions/', {
+    const response = await fetch(`${API_BASE_URL}/ig/sessions/`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id: Number(id), sessionid }),
@@ -333,7 +343,7 @@ export async function updateSessionStatus(id: number | string, sessionid: string
  */
 export async function toggleSessionStatus(id: number | string, status: number) {
   try {
-    const response = await fetch('https://api.storysaver.in/ig/sessions/updateStatus', {
+    const response = await fetch(`${API_BASE_URL}/ig/sessions/updateStatus`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id: Number(id), status: Number(status) }),

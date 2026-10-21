@@ -5,6 +5,13 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+const API_BASE_URL = (
+  process.env.API_BASE_URL ||
+  (process.env.NODE_ENV === 'production'
+    ? 'https://api.storysaver.in'
+    : 'http://localhost:3005')
+).replace(/\/$/, '');
+
 const SETTINGS_REVALIDATE_SECONDS = 60 * 60 * 1;
 
 // Module-level cache for API delay setting
@@ -70,7 +77,7 @@ async function applyConfiguredDelay(): Promise<void> {
 export async function fetchSettings() {
 
   try {
-    const response = await fetch('https://api.storysaver.in/settings', {
+    const response = await fetch(`${API_BASE_URL}/settings`, {
       next: {
         revalidate: SETTINGS_REVALIDATE_SECONDS,
         tags: ['settings'],
@@ -96,7 +103,7 @@ export async function fetchSettings() {
  */
 export async function fetchAds() {
   try {
-    const response = await fetch('https://api.storysaver.in/ads/', {
+    const response = await fetch(`${API_BASE_URL}/ads/`, {
       cache: 'no-store'
     });
     if (!response.ok) {
@@ -120,7 +127,7 @@ export async function fetchAds() {
 export async function searchInstagramUser(username: string) {
   try {
     const response = await fetch(
-      `https://api.storysaver.in/ig/searchUser/${username}`,
+      `${API_BASE_URL}/ig/searchUser/${username}`,
       {
         method: "GET",
         headers: {
@@ -157,7 +164,7 @@ export async function fetchUserStories(userId: string) {
     }
 
     const response = await fetch(
-      `https://api.storysaver.in/ig/stories/${userId}`,
+      `${API_BASE_URL}/ig/stories/${userId}`,
       {
         cache: "no-store",
         headers: {
@@ -203,7 +210,7 @@ export async function fetchUserStories(userId: string) {
  */
 export async function fetchStoryByMediaId(mediaId: string) {
   try {
-    const response = await fetch(`https://api.storysaver.in/ig/media/${mediaId}`,
+    const response = await fetch(`${API_BASE_URL}/ig/media/${mediaId}`,
       {
         method: "GET",
         headers: {
@@ -242,7 +249,7 @@ export async function fetchStoryByMediaId(mediaId: string) {
  */
 export async function fetchHighlightMedia(highlightId: string) {
   try {
-    const response = await fetch(`https://api.storysaver.in/ig/highlight/${highlightId}`,
+    const response = await fetch(`${API_BASE_URL}/ig/highlight/${highlightId}`,
       {
         method: "GET",
         headers: {
@@ -280,7 +287,7 @@ export async function fetchHighlightMedia(highlightId: string) {
  */
 export async function fetchBaseDP(username: string) {
   try {
-    const response = await fetch(`https://api.storysaver.in/ig/baseDP/${username}`,
+    const response = await fetch(`${API_BASE_URL}/ig/baseDP/${username}`,
       {
         method: "GET",
         headers: {
@@ -320,7 +327,7 @@ export async function fetchBaseDP(username: string) {
  */
 export async function fetchSessions() {
   try {
-    const response = await fetch('https://api.storysaver.in/ig/sessions', { cache: 'no-store' });
+    const response = await fetch(`${API_BASE_URL}/ig/sessions`, { cache: 'no-store' });
     if (!response.ok) {
       await applyConfiguredDelay();
       return { data: [] };
@@ -339,7 +346,7 @@ export async function fetchSessions() {
  */
 export async function updateSessionStatus(id: number | string, sessionid: string) {
   try {
-    const response = await fetch('https://api.storysaver.in/ig/sessions/', {
+    const response = await fetch(`${API_BASE_URL}/ig/sessions/`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id: Number(id), sessionid }),
@@ -359,7 +366,7 @@ export async function updateSessionStatus(id: number | string, sessionid: string
  */
 export async function toggleSessionStatus(id: number | string, status: number) {
   try {
-    const response = await fetch('https://api.storysaver.in/ig/sessions/updateStatus', {
+    const response = await fetch(`${API_BASE_URL}/ig/sessions/updateStatus`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id: Number(id), status: Number(status) }),

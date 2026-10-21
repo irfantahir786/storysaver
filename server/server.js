@@ -7,7 +7,7 @@ import adsRouter from './src/routes/ads.routes.js';
 
 
 app.get("/", (req, res) => {
-    res.send("heelo")
+    res.send("Hi there!")
 })
 
 
